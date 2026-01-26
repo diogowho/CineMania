@@ -84,7 +84,9 @@ void displayMoviesTable(const MovieDatabase *db, const int *indices, int count,
 
       printLine(150);
 
+      /* Navigation options */
       if ((page + 1) * LINES_PER_PAGE < count) {
+        /* More pages available - show next/previous/quit */
         printf("\n[N]ext page | [P]revious page | [Q]uit: ");
         if (fgets(input, sizeof(input), stdin) != NULL) {
           toLowerString(input, input);
@@ -98,23 +100,23 @@ void displayMoviesTable(const MovieDatabase *db, const int *indices, int count,
             break;
           }
         }
-      } else {
-        if (page > 0) {
-          printf("\n[P]revious page | [Q]uit: ");
-          if (fgets(input, sizeof(input), stdin) != NULL) {
-            toLowerString(input, input);
-            trimString(input);
+      } else if (page > 0) {
+        /* Last page but not first page - show previous/quit */
+        printf("\n[P]revious page | [Q]uit: ");
+        if (fgets(input, sizeof(input), stdin) != NULL) {
+          toLowerString(input, input);
+          trimString(input);
 
-            if (input[0] == 'p') {
-              page--;
-            } else {
-              break;
-            }
+          if (input[0] == 'p') {
+            page--;
+          } else {
+            break;
           }
-        } else {
-          pauseScreen();
-          break;
         }
+      } else {
+        /* Only one page - just pause and exit */
+        pauseScreen();
+        break;
       }
     }
   } else {
