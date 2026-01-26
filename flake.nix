@@ -48,19 +48,48 @@
           buildInputs = with pkgs; [
             gcc
             gnumake
+            clang-tools
           ];
 
           shellHook = ''
             echo "Available commands:"
-            echo "  make       - Build the project"
-            echo "  make clean - Clean build files"
-            echo "  ./cinemania - Run the program"
+            echo "  make              - Build the project"
+            echo "  make clean        - Clean build files"
+            echo "  ./cinemania       - Run the program"
           '';
         };
 
         apps.default = {
           type = "app";
           program = "${self.packages.${system}.default}/bin/cinemania";
+        };
+
+        formatter = pkgs.treefmt.withConfig {
+          runtimeInputs = with pkgs; [
+            clang-tools
+            nixfmt
+          ];
+
+          settings = {
+            on-unmatched = "info";
+            tree-root-file = "flake.nix";
+
+            formatter = {
+              clang-format = {
+                command = "clang-format";
+                options = [ "-i" ];
+                includes = [
+                  "*.c"
+                  "*.h"
+                ];
+              };
+
+              nixfmt = {
+                command = "nixfmt";
+                includes = [ "*.nix" ];
+              };
+            };
+          };
         };
       }
     );
