@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -O2
 LDFLAGS = 
 TARGET = cinemania
-SOURCES = utils.c
+SOURCES = utils.c movie.c
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(TARGET)
@@ -18,5 +18,6 @@ clean:
 
 # Dependencies
 utils.o: utils.c utils.h types.h
+movie.o: movie.c movie.h types.h utils.h
 
 .PHONY: all clean
