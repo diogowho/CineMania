@@ -231,55 +231,59 @@ int addMovieInteractive(MovieDatabase *db) {
   printf("Auto-generated code: %d\n\n", newMovie.code);
 
   /* Title */
-  readString("Title: ", newMovie.title, MAX_STRING_LENGTH);
-  if (strlen(newMovie.title) == 0) {
-    printf("Error: Title cannot be empty.\n");
-    return 0;
-  }
+  do {
+    readString("Title: ", newMovie.title, MAX_STRING_LENGTH);
+    if (strlen(newMovie.title) == 0) {
+      printf("Error: Title cannot be empty.\n");
+    }
+  } while (strlen(newMovie.title) == 0);
 
   /* Genres */
   printf("\n");
   printGenreList();
-  printf("\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
-  if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
-    newMovie.genreCount = 0;
 
-    /* Initialise all genre slots to GENRE_NONE */
-    for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
-      newMovie.genres[i] = GENRE_NONE;
-    }
+  do {
+    printf("\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
+    if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
+      newMovie.genreCount = 0;
 
-    /* Parse comma-separated genres */
-    token = strtok(genreInput, ",");
-    while (token != NULL && newMovie.genreCount < MAX_GENRES_PER_MOVIE) {
-      trimString(token);
-      genre = getGenreFromString(token);
-
-      if (genre != GENRE_NONE) {
-        newMovie.genres[newMovie.genreCount++] = genre;
-      } else {
-        printf("Warning: Unknown genre '%s' ignored.\n", token);
+      /* Initialise all genre slots to GENRE_NONE */
+      for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
+        newMovie.genres[i] = GENRE_NONE;
       }
 
-      token = strtok(NULL, ",");
-    }
+      /* Parse comma-separated genres */
+      token = strtok(genreInput, ",");
+      while (token != NULL && newMovie.genreCount < MAX_GENRES_PER_MOVIE) {
+        trimString(token);
+        genre = getGenreFromString(token);
 
-    if (newMovie.genreCount == 0) {
-      printf("Error: At least one valid genre is required.\n");
-      return 0;
+        if (genre != GENRE_NONE) {
+          newMovie.genres[newMovie.genreCount++] = genre;
+        } else {
+          printf("Warning: Unknown genre '%s' ignored.\n", token);
+        }
+
+        token = strtok(NULL, ",");
+      }
+
+      if (newMovie.genreCount == 0) {
+        printf("Error: At least one valid genre is required.\n");
+      }
     }
-  }
+  } while (newMovie.genreCount == 0);
 
   /* Description */
   printf("\n");
   readString("Description: ", newMovie.description, MAX_DESCRIPTION_LENGTH);
 
   /* Director */
-  readString("Director: ", newMovie.director, MAX_STRING_LENGTH);
-  if (strlen(newMovie.director) == 0) {
-    printf("Error: Director cannot be empty.\n");
-    return 0;
-  }
+  do {
+    readString("Director: ", newMovie.director, MAX_STRING_LENGTH);
+    if (strlen(newMovie.director) == 0) {
+      printf("Error: Director cannot be empty.\n");
+    }
+  } while (strlen(newMovie.director) == 0);
 
   /* Actors */
   printf("\nEnter actors separated by commas: ");
@@ -366,6 +370,7 @@ int editMovie(MovieDatabase *db, int code) {
   char *token;
   Genre genre;
   int i;
+  int validGenre;
 
   if (db == NULL) {
     printf("Error: Invalid database.\n");
@@ -381,111 +386,121 @@ int editMovie(MovieDatabase *db, int code) {
 
   movie = &db->movies[index];
 
-  printHeader("Edit Movie");
-  printf("Editing movie: %s (Code: %d)\n\n", movie->title, movie->code);
+  do {
+    printHeader("Edit Movie");
+    printf("Editing movie: %s (Code: %d)\n\n", movie->title, movie->code);
 
-  /* Note: According to spec, can edit: title, genres, year, duration, rating,
-   * favorite, revenue */
-  /* Cannot edit: code, description, director, actors */
+    /* Note: According to spec, can edit: title, genres, year, duration, rating,
+     * favorite, revenue */
+    /* Cannot edit: code, description, director, actors */
 
-  printf("What would you like to edit?\n");
-  printLine(50);
-  printf("1. Title\n");
-  printf("2. Genres\n");
-  printf("3. Year\n");
-  printf("4. Duration\n");
-  printf("5. Rating\n");
-  printf("6. Favorites count\n");
-  printf("7. Revenue\n");
-  printf("0. Cancel\n");
-  printLine(50);
+    printf("What would you like to edit?\n");
+    printLine(50);
+    printf("1. Title\n");
+    printf("2. Genres\n");
+    printf("3. Year\n");
+    printf("4. Duration\n");
+    printf("5. Rating\n");
+    printf("6. Favorites count\n");
+    printf("7. Revenue\n");
+    printf("0. Finish Editing\n");
+    printLine(50);
 
-  choice = readInteger("Choice: ", 0, 7);
+    choice = readInteger("Choice: ", 0, 7);
 
-  switch (choice) {
-  case 1: /* Title */
-    readString("New title: ", buffer, MAX_STRING_LENGTH);
-    if (strlen(buffer) > 0) {
-      strncpy(movie->title, buffer, MAX_STRING_LENGTH - 1);
-      movie->title[MAX_STRING_LENGTH - 1] = '\0';
-      printf("Title updated successfully.\n");
-    }
-    break;
-
-  case 2: /* Genres */
-    printGenreList();
-    printf("\nEnter new genres separated by commas: ");
-    if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
-      movie->genreCount = 0;
-
-      /* Initialise all genre slots to GENRE_NONE */
-      for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
-        movie->genres[i] = GENRE_NONE;
+    switch (choice) {
+    case 1: /* Title */
+      readString("New title: ", buffer, MAX_STRING_LENGTH);
+      if (strlen(buffer) > 0) {
+        strncpy(movie->title, buffer, MAX_STRING_LENGTH - 1);
+        movie->title[MAX_STRING_LENGTH - 1] = '\0';
+        printf("Title updated successfully.\n");
       }
+      break;
 
-      /* Parse comma-separated genres */
-      token = strtok(genreInput, ",");
-      while (token != NULL && movie->genreCount < MAX_GENRES_PER_MOVIE) {
-        trimString(token);
-        genre = getGenreFromString(token);
+    case 2: /* Genres */
+      printGenreList();
+      validGenre = 0;
 
-        if (genre != GENRE_NONE) {
-          movie->genres[movie->genreCount++] = genre;
-        } else {
-          printf("Warning: Unknown genre '%s' ignored.\n", token);
+      do {
+        printf("\nEnter new genres separated by commas: ");
+        if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
+          int tempCount = 0;
+          Genre tempGenres[MAX_GENRES_PER_MOVIE];
+
+          /* Initialise all genre slots to GENRE_NONE */
+          for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
+            tempGenres[i] = GENRE_NONE;
+          }
+
+          /* Parse comma-separated genres */
+          token = strtok(genreInput, ",");
+          while (token != NULL && tempCount < MAX_GENRES_PER_MOVIE) {
+            trimString(token);
+            genre = getGenreFromString(token);
+
+            if (genre != GENRE_NONE) {
+              tempGenres[tempCount++] = genre;
+            } else {
+              if (strlen(token) > 0) {
+                printf("Warning: Unknown genre '%s' ignored.\n", token);
+              }
+            }
+            token = strtok(NULL, ",");
+          }
+
+          if (tempCount > 0) {
+            movie->genreCount = tempCount;
+            for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
+              movie->genres[i] = tempGenres[i];
+            }
+            printf("Genres updated successfully.\n");
+            validGenre = 1;
+          } else {
+            printf("Error: At least one valid genre is required. Please try again.\n");
+            validGenre = 0;
+          }
         }
+      } while (!validGenre);
+      break;
 
-        token = strtok(NULL, ",");
-      }
+    case 3: /* Year */
+      movie->year = readInteger("New year: ", 1888, 2100);
+      printf("Year updated successfully.\n");
+      break;
 
-      if (movie->genreCount > 0) {
-        printf("Genres updated successfully.\n");
-      } else {
-        printf("Error: At least one valid genre is required. Changes not "
-               "saved.\n");
-        return 0;
-      }
+    case 4: /* Duration */
+      movie->duration = readInteger("New duration (minutes): ", 1, 600);
+      printf("Duration updated successfully.\n");
+      break;
+
+    case 5: /* Rating */
+      movie->rating = readFloat("New rating (0-10): ", 0.0f, 10.0f);
+      printf("Rating updated successfully.\n");
+      break;
+
+    case 6: /* Favorites */
+      movie->favorite = readInteger("New favorites count: ", 0, 999999999);
+      printf("Favorites count updated successfully.\n");
+      break;
+
+    case 7: /* Revenue */
+      movie->revenue = readFloat("New revenue (millions): ", 0.0f, 999999.0f);
+      printf("Revenue updated successfully.\n");
+      break;
+
+    case 0: /* Finish Editing */
+      break;
+
+    default:
+      printf("Invalid choice.\n");
+      break;
     }
-    break;
-
-  case 3: /* Year */
-    movie->year = readInteger("New year: ", 1888, 2100);
-    printf("Year updated successfully.\n");
-    break;
-
-  case 4: /* Duration */
-    movie->duration = readInteger("New duration (minutes): ", 1, 600);
-    printf("Duration updated successfully.\n");
-    break;
-
-  case 5: /* Rating */
-    movie->rating = readFloat("New rating (0-10): ", 0.0f, 10.0f);
-    printf("Rating updated successfully.\n");
-    break;
-
-  case 6: /* Favorites */
-    movie->favorite = readInteger("New favorites count: ", 0, 999999999);
-    printf("Favorites count updated successfully.\n");
-    break;
-
-  case 7: /* Revenue */
-    movie->revenue = readFloat("New revenue (millions): ", 0.0f, 999999.0f);
-    printf("Revenue updated successfully.\n");
-    break;
-
-  case 0: /* Cancel */
-    printf("Edit cancelled.\n");
-    return 0;
-
-  default:
-    printf("Invalid choice.\n");
-    return 0;
-  }
+  } while (choice != 0);
 
   return 1;
 }
 
-/* Search movies by title substring (case insensitive) */
 int searchByTitle(const MovieDatabase *db, const char *searchTerm, int *results,
                   int maxResults) {
   int i, count = 0;
