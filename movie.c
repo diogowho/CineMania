@@ -237,36 +237,36 @@ int addMovieInteractive(MovieDatabase *db) {
     return 0;
   }
 
-  /* Genres */
-  printf("\n");
-  printGenreList();
-  printf("\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
-  if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
-    newMovie.genreCount = 0;
-
-    /* Initialise all genre slots to GENRE_NONE */
-    for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
-      newMovie.genres[i] = GENRE_NONE;
-    }
-
-    /* Parse comma-separated genres */
-    token = strtok(genreInput, ",");
-    while (token != NULL && newMovie.genreCount < MAX_GENRES_PER_MOVIE) {
-      trimString(token);
-      genre = getGenreFromString(token);
-
-      if (genre != GENRE_NONE) {
-        newMovie.genres[newMovie.genreCount++] = genre;
-      } else {
-        printf("Warning: Unknown genre '%s' ignored.\n", token);
+  /* Genres - allow retrying on invalid input */
+  newMovie.genreCount = 0;
+  while (newMovie.genreCount == 0) {
+    printf("\n");
+    printGenreList();
+    printf("\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
+    if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
+      /* Initialise all genre slots to GENRE_NONE */
+      for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
+        newMovie.genres[i] = GENRE_NONE;
       }
 
-      token = strtok(NULL, ",");
-    }
+      /* Parse comma-separated genres */
+      token = strtok(genreInput, ",");
+      while (token != NULL && newMovie.genreCount < MAX_GENRES_PER_MOVIE) {
+        trimString(token);
+        genre = getGenreFromString(token);
 
-    if (newMovie.genreCount == 0) {
-      printf("Error: At least one valid genre is required.\n");
-      return 0;
+        if (genre != GENRE_NONE) {
+          newMovie.genres[newMovie.genreCount++] = genre;
+        } else {
+          printf("Warning: Unknown genre '%s' ignored.\n", token);
+        }
+
+        token = strtok(NULL, ",");
+      }
+
+      if (newMovie.genreCount == 0) {
+        printf("Error: At least one valid genre is required. Please try again.\n");
+      }
     }
   }
 
