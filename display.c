@@ -114,8 +114,7 @@ void displayMoviesTable(const MovieDatabase *db, const int *indices, int count,
           }
         }
       } else {
-        /* Only one page - just pause and exit */
-        pauseScreen();
+        /* Only one page - exit without pausing (caller handles pause) */
         break;
       }
     }
