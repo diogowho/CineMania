@@ -10,7 +10,7 @@ else
 endif
 
 CC = gcc
-CFLAGS = -std=89 -Wall -Wextra -Werror -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -O2
+CFLAGS = -std=c89 -Wall -Wextra -Werror -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -O2
 LDFLAGS = 
 SOURCES = main.c utils.c movie.c fileio.c display.c
 OBJECTS = $(SOURCES:.c=.o)
