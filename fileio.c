@@ -331,7 +331,7 @@ int exportMoviesToCSV(const MovieDatabase *db, const char *filename) {
     fprintf(file, "%d;", m->duration);
 
     /* Rating (with comma as decimal separator) */
-    snprintf(ratingStr, sizeof(ratingStr), "%.1f", m->rating);
+    sprintf(ratingStr, "%.1f", m->rating);
     replaceDotWithComma(ratingStr);
     fprintf(file, "%s;", ratingStr);
 
@@ -339,7 +339,7 @@ int exportMoviesToCSV(const MovieDatabase *db, const char *filename) {
     fprintf(file, "%d;", m->favorite);
 
     /* Revenue (with comma as decimal separator) */
-    snprintf(revenueStr, sizeof(revenueStr), "%.2f", m->revenue);
+    sprintf(revenueStr, "%.2f", m->revenue);
     replaceDotWithComma(revenueStr);
     fprintf(file, "%s\n", revenueStr);
   }
