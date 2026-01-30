@@ -27,10 +27,6 @@ int main(void) {
   /* Initialise database */
   initDatabase(&db);
 
-  printHeader("CineMania - Movie Management System");
-  printf("Welcome to CineMania!\n");
-  pauseScreen();
-
   /* Main program loop */
   while (running) {
     clearScreen();
@@ -259,6 +255,7 @@ void handleAddMovie(MovieDatabase *db) {
 /* Menu option 5: Edit movie */
 void handleEditMovie(MovieDatabase *db) {
   int code;
+  int index;
 
   clearScreen();
 
@@ -268,7 +265,23 @@ void handleEditMovie(MovieDatabase *db) {
     return;
   }
 
-  code = readInteger("Enter movie code to edit: ", 1, 999999);
+  /* Keep asking for a valid code or allow cancel */
+  while (1) {
+    code = readInteger("Enter movie code to edit (0 to cancel): ", 0, 999999);
+    
+    if (code == 0) {
+      printf("Edit cancelled.\n");
+      pauseScreen();
+      return;
+    }
+    
+    index = findMovieByCode(db, code);
+    if (index == -1) {
+      printf("\nMovie with code %d not found. Please try again.\n\n", code);
+    } else {
+      break;
+    }
+  }
 
   printf("\n");
   if (editMovie(db, code)) {
@@ -291,7 +304,13 @@ void handleDeleteMovie(MovieDatabase *db) {
     return;
   }
 
-  code = readInteger("Enter movie code to delete: ", 1, 999999);
+  code = readInteger("Enter movie code to delete (0 to cancel): ", 0, 999999);
+  
+  if (code == 0) {
+    printf("Delete cancelled.\n");
+    pauseScreen();
+    return;
+  }
 
   index = findMovieByCode(db, code);
 
