@@ -268,13 +268,13 @@ void handleEditMovie(MovieDatabase *db) {
   /* Keep asking for a valid code or allow cancel */
   while (1) {
     code = readInteger("Enter movie code to edit (0 to cancel): ", 0, 999999);
-    
+
     if (code == 0) {
       printf("Edit cancelled.\n");
       pauseScreen();
       return;
     }
-    
+
     index = findMovieByCode(db, code);
     if (index == -1) {
       printf("\nMovie with code %d not found. Please try again.\n\n", code);
@@ -305,7 +305,7 @@ void handleDeleteMovie(MovieDatabase *db) {
   }
 
   code = readInteger("Enter movie code to delete (0 to cancel): ", 0, 999999);
-  
+
   if (code == 0) {
     printf("Delete cancelled.\n");
     pauseScreen();

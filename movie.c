@@ -242,7 +242,8 @@ int addMovieInteractive(MovieDatabase *db) {
   while (newMovie.genreCount == 0) {
     printf("\n");
     printGenreList();
-    printf("\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
+    printf(
+        "\nEnter genres separated by commas (e.g., Action, Drama, Comedy): ");
     if (fgets(genreInput, MAX_STRING_LENGTH, stdin) != NULL) {
       /* Initialise all genre slots to GENRE_NONE */
       for (i = 0; i < MAX_GENRES_PER_MOVIE; i++) {
@@ -265,7 +266,8 @@ int addMovieInteractive(MovieDatabase *db) {
       }
 
       if (newMovie.genreCount == 0) {
-        printf("Error: At least one valid genre is required. Please try again.\n");
+        printf(
+            "Error: At least one valid genre is required. Please try again.\n");
       }
     }
   }

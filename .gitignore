@@ -3,6 +3,7 @@
 
 # Executable
 cinemania
+cinemania.exe
 
 # Debug files
 *.dSYM/
